@@ -69,6 +69,9 @@ def FeatureRelax
     : SubtargetFeature<"relax", "EnableLinkerRelax", "true",
                        "Enable Linker relaxation.">;
 
+def FeatureSaveRestore : SubtargetFeature<"save-restore", "EnableSaveRestore",
+                                          "true", "Enable save/restore.">;
+
 //===----------------------------------------------------------------------===//
 // Named operands for CSR instructions.
 //===----------------------------------------------------------------------===//

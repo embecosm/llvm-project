@@ -28,6 +28,10 @@
 #include <arm64intr.h>
 #endif
 
+#if defined(__riscv32__) || defined(__riscv64__)
+#include <rvintrin.h>
+#endif
+
 /* For the definition of jmp_buf. */
 #if __STDC_HOSTED__
 #include <setjmp.h>

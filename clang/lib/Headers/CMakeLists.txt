@@ -86,6 +86,16 @@ set(files
   ptwriteintrin.h
   rdseedintrin.h
   rtmintrin.h
+  rv32bintrin-builtins.h
+  rv32bintrin-emulation.h
+  rv32bintrin.h
+  rv64bintrin-asm.h
+  rv64bintrin-builtins.h
+  rv64bintrin-emulation.h
+  rv64bintrin.h
+  rvbintrin-asm.h
+  rvbintrin-emulation.h
+  rvintrin.h
   sgxintrin.h
   s390intrin.h
   shaintrin.h

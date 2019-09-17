@@ -43,6 +43,80 @@ def FeatureStdExtC
 def HasStdExtC : Predicate<"Subtarget->hasStdExtC()">,
                            AssemblerPredicate<"FeatureStdExtC">;
 
+def FeatureExtZbb
+    : SubtargetFeature<"bb", "HasStdExtZbb", "true",
+                       "'Zbb' (Base Bit Manipulation Instructions)">;
+def HasStdExtZbb : Predicate<"Subtarget->hasStdExtZbb()">,
+                           AssemblerPredicate<"FeatureExtZbb">;
+
+def FeatureExtZbc
+    : SubtargetFeature<"bc", "HasStdExtZbc", "true",
+                       "'Zbc' (Carry-Less Bit Manipulation Instructions)">;
+def HasStdExtZbc : Predicate<"Subtarget->hasStdExtZbc()">,
+                           AssemblerPredicate<"FeatureExtZbc">;
+
+def FeatureExtZbe
+    : SubtargetFeature<"be", "HasStdExtZbe", "true",
+                       "'Zbe' (Extract-Deposit Bit Manipulation Instructions)">;
+def HasStdExtZbe : Predicate<"Subtarget->hasStdExtZbe()">,
+                           AssemblerPredicate<"FeatureExtZbe">;
+
+def FeatureExtZbf
+    : SubtargetFeature<"bf", "HasStdExtZbf", "true",
+                       "'Zbf' (Bit-Field Bit Manipulation Instructions)">;
+def HasStdExtZbf : Predicate<"Subtarget->hasStdExtZbf()">,
+                           AssemblerPredicate<"FeatureExtZbf">;
+
+def FeatureExtZbm
+    : SubtargetFeature<"bm", "HasStdExtZbm", "true",
+                       "'Zbm' (Matrix Bit Manipulation Instructions)">;
+def HasStdExtZbm : Predicate<"Subtarget->hasStdExtZbm()">,
+                           AssemblerPredicate<"FeatureExtZbm">;
+
+def FeatureExtZbp
+    : SubtargetFeature<"bp", "HasStdExtZbp", "true",
+                       "'Zbp' (Permutation Bit Manipulation Instructions)">;
+def HasStdExtZbp : Predicate<"Subtarget->hasStdExtZbp()">,
+                           AssemblerPredicate<"FeatureExtZbp">;
+
+def FeatureExtZbr
+    : SubtargetFeature<"br", "HasStdExtZbr", "true",
+                       "'Zbr' (Polynomial Reduction Bit Manipulation Instructions)">;
+def HasStdExtZbr : Predicate<"Subtarget->hasStdExtZbr()">,
+                           AssemblerPredicate<"FeatureExtZbr">;
+
+def FeatureExtZbs
+    : SubtargetFeature<"bs", "HasStdExtZbs", "true",
+                       "'Zbs' (Single-Bit Bit Manipulation Instructions)">;
+def HasStdExtZbs : Predicate<"Subtarget->hasStdExtZbs()">,
+                           AssemblerPredicate<"FeatureExtZbs">;
+
+def FeatureExtZbt
+    : SubtargetFeature<"bt", "HasStdExtZbt", "true",
+                       "'Zbt' (Ternary Bit Manipulation Instructions)">;
+def HasStdExtZbt : Predicate<"Subtarget->hasStdExtZbt()">,
+                           AssemblerPredicate<"FeatureExtZbt">;
+
+// For instructions that belong to both the basic and the permutation subextensions.
+// They should be added if any of the two subextension has been specified.
+def HasStdExtZbbOrZbp
+    : Predicate<"Subtarget->hasStdExtZbb() || Subtarget->hasStdExtZbp()">;
+
+def FeatureStdExtB
+    : SubtargetFeature<"b", "HasStdExtB", "true",
+                       "'B' (Bit Manipulation Instructions)",
+                                [FeatureExtZbb,
+                                 FeatureExtZbc,
+                                 FeatureExtZbe,
+                                 FeatureExtZbf,
+                                 FeatureExtZbm,
+                                 FeatureExtZbp,
+                                 FeatureExtZbr,
+                                 FeatureExtZbs,
+                                 FeatureExtZbt]>;
+def HasStdExtB : Predicate<"Subtarget->hasStdExtB()">,
+                           AssemblerPredicate<"FeatureStdExtB">;
+
 def FeatureRVCHints
     : SubtargetFeature<"rvc-hints", "EnableRVCHintInstrs", "true",
                        "Enable RVC Hint Instructions.">;

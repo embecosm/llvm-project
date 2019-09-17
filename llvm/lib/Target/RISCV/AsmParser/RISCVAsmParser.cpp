@@ -421,6 +421,16 @@ public:
            VK == RISCVMCExpr::VK_RISCV_None;
   }
 
+  bool isUImm6() const {
+    if (!isImm())
+      return false;
+    RISCVMCExpr::VariantKind VK;
+    int64_t Imm;
+    bool IsConstantImm = evaluateConstantImm(getImm(), Imm, VK);
+    return IsConstantImm && isUInt<6>(Imm) &&
+           VK == RISCVMCExpr::VK_RISCV_None;
+  }
+
   bool isSImm6() const {
     if (!isImm())
       return false;
@@ -449,6 +459,16 @@ public:
     bool IsConstantImm = evaluateConstantImm(getImm(), Imm, VK);
     return IsConstantImm && (Imm != 0) &&
            (isUInt<5>(Imm) || (Imm >= 0xfffe0 && Imm <= 0xfffff)) &&
+           VK == RISCVMCExpr::VK_RISCV_None;
+  }
+
+  bool isUImm7() const {
+    if (!isImm())
+      return false;
+    RISCVMCExpr::VariantKind VK;
+    int64_t Imm;
+    bool IsConstantImm = evaluateConstantImm(getImm(), Imm, VK);
+    return IsConstantImm && isUInt<7>(Imm) &&
            VK == RISCVMCExpr::VK_RISCV_None;
   }
 
@@ -850,6 +870,8 @@ bool RISCVAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
     return generateImmOutOfRangeError(Operands, ErrorInfo, 1, (1 << 5) - 1);
   case Match_InvalidUImm5:
     return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 5) - 1);
+  case Match_InvalidUImm6:
+    return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 6) - 1);
   case Match_InvalidSImm6:
     return generateImmOutOfRangeError(Operands, ErrorInfo, -(1 << 5),
                                       (1 << 5) - 1);
@@ -861,6 +883,8 @@ bool RISCVAsmParser::MatchAndEmitInstruction(SMLoc IDLoc, unsigned &Opcode,
     return generateImmOutOfRangeError(
         Operands, ErrorInfo, 1, (1 << 5) - 1,
         "immediate must be in [0xfffe0, 0xfffff] or");
+  case Match_InvalidUImm7:
+    return generateImmOutOfRangeError(Operands, ErrorInfo, 0, (1 << 7) - 1);
   case Match_InvalidUImm7Lsb00:
     return generateImmOutOfRangeError(
         Operands, ErrorInfo, 0, (1 << 7) - 4,

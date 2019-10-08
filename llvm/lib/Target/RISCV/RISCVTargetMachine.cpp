@@ -67,6 +67,9 @@ RISCVTargetMachine::RISCVTargetMachine(const Target &T, const Triple &TT,
       TLOF(std::make_unique<RISCVELFTargetObjectFile>()),
       Subtarget(TT, CPU, FS, Options.MCOptions.getABIName(), *this) {
   initAsmInfo();
+
+  // RISC-V supports the MachineOutliner.
+  setMachineOutliner(true);
 }
 
 TargetTransformInfo

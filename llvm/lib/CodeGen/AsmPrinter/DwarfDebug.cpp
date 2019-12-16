@@ -722,6 +722,11 @@ void DwarfDebug::constructCallSiteEntryDIEs(const DISubprogram &SP,
       if (!MI.isCall())
         continue;
 
+      // Skip instructions marked as frame setup, since these will not have been
+      // given labels to calculate PC offset/location from.
+      if (MI.getFlag(MachineInstr::FrameSetup))
+        continue;
+
       // TODO: Add support for targets with delay slots (see: beginInstruction).
       if (MI.hasDelaySlot())
         return;

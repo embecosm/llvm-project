@@ -2,9 +2,9 @@
 ; RUN: llc -mtriple=riscv32 -verify-machineinstrs < %s \
 ; RUN:   | FileCheck %s -check-prefix=RV32I
 ; RUN: llc -mtriple=riscv32 -mattr=+experimental-b -verify-machineinstrs < %s \
-; RUN:   | FileCheck %s -check-prefix=RV32IB
+; RUN:   | FileCheck %s -check-prefixes=RV32IB,RV32IBT
 ; RUN: llc -mtriple=riscv32 -mattr=+experimental-zbb -verify-machineinstrs < %s \
-; RUN:   | FileCheck %s -check-prefix=RV32IB
+; RUN:   | FileCheck %s -check-prefixes=RV32IB,RV32IBB
 
 define i32 @slo_i32(i32 %a, i32 %b) nounwind {
 ; RV32I-LABEL: slo_i32:
@@ -172,13 +172,20 @@ define i64 @sloi_i64(i64 %a) nounwind {
 ; RV32I-NEXT:    ori a0, a0, 1
 ; RV32I-NEXT:    ret
 ;
-; RV32IB-LABEL: sloi_i64:
-; RV32IB:       # %bb.0:
-; RV32IB-NEXT:    srli a2, a0, 31
-; RV32IB-NEXT:    slli a1, a1, 1
-; RV32IB-NEXT:    or a1, a1, a2
-; RV32IB-NEXT:    sloi a0, a0, 1
-; RV32IB-NEXT:    ret
+; RV32IBB-LABEL: sloi_i64:
+; RV32IBB:       # %bb.0:
+; RV32IBB-NEXT:    srli a2, a0, 31
+; RV32IBB-NEXT:    slli a1, a1, 1
+; RV32IBB-NEXT:    or a1, a1, a2
+; RV32IBB-NEXT:    sloi a0, a0, 1
+; RV32IBB-NEXT:    ret
+;
+; RV32IBT-LABEL: sloi_i64:
+; RV32IBT:       # %bb.0:
+; RV32IBT-NEXT:    addi a2, zero, 1
+; RV32IBT-NEXT:    fsl a1, a1, a2, a0
+; RV32IBT-NEXT:    sloi a0, a0, 1
+; RV32IBT-NEXT:    ret
   %neg = shl i64 %a, 1
   %neg12 = or i64 %neg, 1
   ret i64 %neg12
@@ -212,13 +219,20 @@ define i64 @sroi_i64(i64 %a) nounwind {
 ; RV32I-NEXT:    or a1, a1, a2
 ; RV32I-NEXT:    ret
 ;
-; RV32IB-LABEL: sroi_i64:
-; RV32IB:       # %bb.0:
-; RV32IB-NEXT:    slli a2, a1, 31
-; RV32IB-NEXT:    srli a0, a0, 1
-; RV32IB-NEXT:    or a0, a0, a2
-; RV32IB-NEXT:    sroi a1, a1, 1
-; RV32IB-NEXT:    ret
+; RV32IBB-LABEL: sroi_i64:
+; RV32IBB:       # %bb.0:
+; RV32IBB-NEXT:    slli a2, a1, 31
+; RV32IBB-NEXT:    srli a0, a0, 1
+; RV32IBB-NEXT:    or a0, a0, a2
+; RV32IBB-NEXT:    sroi a1, a1, 1
+; RV32IBB-NEXT:    ret
+;
+; RV32IBT-LABEL: sroi_i64:
+; RV32IBT:       # %bb.0:
+; RV32IBT-NEXT:    addi a2, zero, 31
+; RV32IBT-NEXT:    fsl a0, a1, a2, a0
+; RV32IBT-NEXT:    sroi a1, a1, 1
+; RV32IBT-NEXT:    ret
   %neg = lshr i64 %a, 1
   %neg12 = or i64 %neg, -9223372036854775808
   ret i64 %neg12

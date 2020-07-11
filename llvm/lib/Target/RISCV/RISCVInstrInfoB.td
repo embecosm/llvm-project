@@ -795,6 +795,17 @@ def : Pat<(bswap GPR:$rs1), (GREVI GPR:$rs1, (i64 56))>;
 def : Pat<(bitreverse GPR:$rs1), (GREVI GPR:$rs1, (i64 63))>;
 } // Predicates = [HasStdExtZbp, IsRV64]
 
+let Predicates = [HasStdExtZbt] in {
+def : Pat<(or (and (xor GPR:$rs2, -1), GPR:$rs3), (and GPR:$rs2, GPR:$rs1)),
+          (CMIX GPR:$rs1, GPR:$rs2, GPR:$rs3)>;
+def : Pat<(riscv_selectcc GPR:$rs2, (XLenVT 0), (XLenVT 17), GPR:$rs3, GPR:$rs1),
+          (CMOV GPR:$rs1, GPR:$rs2, GPR:$rs3)>;
+def : Pat<(fshl GPR:$rs1, GPR:$rs2, GPR:$rs3),
+          (FSL GPR:$rs1, GPR:$rs2, GPR:$rs3)>;
+def : Pat<(fshr GPR:$rs1, GPR:$rs2, GPR:$rs3),
+          (FSR GPR:$rs1, GPR:$rs2, GPR:$rs3)>;
+} // Predicates = [HasStdExtZbt]
+
 let Predicates = [HasStdExtZbb] in {
 def : Pat<(ctlz GPR:$rs1), (CLZ GPR:$rs1)>;
 def : Pat<(cttz GPR:$rs1), (CTZ GPR:$rs1)>;

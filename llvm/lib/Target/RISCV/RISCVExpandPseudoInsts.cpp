@@ -123,8 +123,13 @@ bool RISCVExpandPseudo::expandAuipcInstPair(
 
   MF->insert(++MBB.getIterator(), NewMBB);
 
-  BuildMI(NewMBB, DL, TII->get(RISCV::AUIPC), DestReg)
-      .addDisp(Symbol, 0, FlagsHi);
+  if (Symbol.getType() == MachineOperand::MO_JumpTableIndex)
+    BuildMI(NewMBB, DL, TII->get(RISCV::AUIPC), DestReg)
+        .addJumpTableIndex(Symbol.getIndex(), FlagsHi);
+  else
+    BuildMI(NewMBB, DL, TII->get(RISCV::AUIPC), DestReg)
+        .addDisp(Symbol, 0, FlagsHi);
+
   BuildMI(NewMBB, DL, TII->get(SecondOpcode), DestReg)
       .addReg(DestReg)
       .addMBB(NewMBB, RISCVII::MO_PCREL_LO);

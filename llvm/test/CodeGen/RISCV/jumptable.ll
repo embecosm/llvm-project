@@ -5,53 +5,111 @@
 define void @jt(i32 %in, i32* %out) nounwind {
 ; RV32I-LABEL: jt:
 ; RV32I:       # %bb.0: # %entry
-; RV32I-NEXT:    addi a2, zero, 2
-; RV32I-NEXT:    blt a2, a0, .LBB0_4
+; RV32I-NEXT:    addi sp, sp, -16
+; RV32I-NEXT:    sw ra, 12(sp)
+; RV32I-NEXT:    addi a2, zero, 6
+; RV32I-NEXT:    bltu a2, a0, .LBB0_9
 ; RV32I-NEXT:  # %bb.1: # %entry
-; RV32I-NEXT:    addi a2, zero, 1
-; RV32I-NEXT:    beq a0, a2, .LBB0_7
-; RV32I-NEXT:  # %bb.2: # %entry
-; RV32I-NEXT:    addi a2, zero, 2
-; RV32I-NEXT:    bne a0, a2, .LBB0_10
-; RV32I-NEXT:  # %bb.3: # %bb2
-; RV32I-NEXT:    addi a0, zero, 3
-; RV32I-NEXT:    j .LBB0_9
-; RV32I-NEXT:  .LBB0_4: # %entry
-; RV32I-NEXT:    addi a2, zero, 3
-; RV32I-NEXT:    beq a0, a2, .LBB0_8
-; RV32I-NEXT:  # %bb.5: # %entry
-; RV32I-NEXT:    addi a2, zero, 4
-; RV32I-NEXT:    bne a0, a2, .LBB0_10
-; RV32I-NEXT:  # %bb.6: # %bb4
+; RV32I-NEXT:    slli a0, a0, 2
+; RV32I-NEXT:    lui a2, %hi(.LJTI0_0)
+; RV32I-NEXT:    addi a2, a2, %lo(.LJTI0_0)
+; RV32I-NEXT:    add a0, a0, a2
+; RV32I-NEXT:    lw a0, 0(a0)
+; RV32I-NEXT:    jr a0
+; RV32I-NEXT:  .LBB0_2: # %bb7
 ; RV32I-NEXT:    addi a0, zero, 1
-; RV32I-NEXT:    j .LBB0_9
-; RV32I-NEXT:  .LBB0_7: # %bb1
+; RV32I-NEXT:    j .LBB0_8
+; RV32I-NEXT:  .LBB0_3: # %bb1
+; RV32I-NEXT:    addi a0, zero, 6
+; RV32I-NEXT:    j .LBB0_8
+; RV32I-NEXT:  .LBB0_4: # %bb2
+; RV32I-NEXT:    addi a0, zero, 5
+; RV32I-NEXT:    j .LBB0_8
+; RV32I-NEXT:  .LBB0_5: # %bb3
 ; RV32I-NEXT:    addi a0, zero, 4
-; RV32I-NEXT:    j .LBB0_9
-; RV32I-NEXT:  .LBB0_8: # %bb3
+; RV32I-NEXT:    j .LBB0_8
+; RV32I-NEXT:  .LBB0_6: # %bb4
+; RV32I-NEXT:    addi a0, zero, 3
+; RV32I-NEXT:    j .LBB0_8
+; RV32I-NEXT:  .LBB0_7: # %bb5
 ; RV32I-NEXT:    addi a0, zero, 2
-; RV32I-NEXT:  .LBB0_9: # %exit
+; RV32I-NEXT:  .LBB0_8: # %exit
 ; RV32I-NEXT:    sw a0, 0(a1)
-; RV32I-NEXT:  .LBB0_10: # %exit
+; RV32I-NEXT:  .LBB0_9: # %exit
+; RV32I-NEXT:    lw ra, 12(sp)
+; RV32I-NEXT:    addi sp, sp, 16
 ; RV32I-NEXT:    ret
 entry:
   switch i32 %in, label %exit [
-    i32 1, label %bb1
-    i32 2, label %bb2
-    i32 3, label %bb3
-    i32 4, label %bb4
+    i32 0, label %bb1
+    i32 1, label %bb2
+    i32 2, label %bb3
+    i32 3, label %bb4
+    i32 4, label %bb5
+    i32 5, label %bb6
+    i32 6, label %bb7
   ]
 bb1:
-  store i32 4, i32* %out
+  store i32 6, i32* %out
   br label %exit
 bb2:
-  store i32 3, i32* %out
+  store i32 5, i32* %out
   br label %exit
 bb3:
-  store i32 2, i32* %out
+  store i32 4, i32* %out
   br label %exit
 bb4:
+  store i32 3, i32* %out
+  br label %exit
+bb5:
+  store i32 2, i32* %out
+  br label %exit
+bb6:
   store i32 1, i32* %out
+  br label %exit
+bb7:
+  store i32 1, i32* %out
+  br label %exit
+exit:
+  ret void
+}
+
+define void @insufficient_entries(i32 %in, i32* %out) nounwind {
+; RV32I-LABEL: insufficient_entries:
+; RV32I:       # %bb.0: # %entry
+; RV32I-NEXT:    addi a2, zero, 2
+; RV32I-NEXT:    beq a0, a2, .LBB1_4
+; RV32I-NEXT:  # %bb.1: # %entry
+; RV32I-NEXT:    addi a2, zero, 1
+; RV32I-NEXT:    beq a0, a2, .LBB1_5
+; RV32I-NEXT:  # %bb.2: # %entry
+; RV32I-NEXT:    bnez a0, .LBB1_7
+; RV32I-NEXT:  # %bb.3: # %bb1
+; RV32I-NEXT:    addi a0, zero, 6
+; RV32I-NEXT:    j .LBB1_6
+; RV32I-NEXT:  .LBB1_4: # %bb3
+; RV32I-NEXT:    addi a0, zero, 4
+; RV32I-NEXT:    j .LBB1_6
+; RV32I-NEXT:  .LBB1_5: # %bb2
+; RV32I-NEXT:    addi a0, zero, 5
+; RV32I-NEXT:  .LBB1_6: # %exit
+; RV32I-NEXT:    sw a0, 0(a1)
+; RV32I-NEXT:  .LBB1_7: # %exit
+; RV32I-NEXT:    ret
+entry:
+  switch i32 %in, label %exit [
+    i32 0, label %bb1
+    i32 1, label %bb2
+    i32 2, label %bb3
+  ]
+bb1:
+  store i32 6, i32* %out
+  br label %exit
+bb2:
+  store i32 5, i32* %out
+  br label %exit
+bb3:
+  store i32 4, i32* %out
   br label %exit
 exit:
   ret void
